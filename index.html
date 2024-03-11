@@ -1,168 +1,125 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=https://github.com/LucassSantoss/Sudoku.git, initial-scale=1.0">
-  <title>Sudoku game</title>
-  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
-</head>
-<body>
-  <div id="containerReact"></div>
-  <script type="text/babel">
-    function isNumberRepeated(array, number){
-      let count = 0;
-      for(let i=0; i<array.length; i++){
-        for (let j=i+1; j<array.length; j++){
-          if (array[i] == array[j]){
-            count++;
-            if (count > 1){
-              return true;
-            }
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=https://github.com/LucassSantoss/Sudoku.git, initial-scale=1.0"
+    />
+    <title>Sudoku game</title>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@17/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"
+    ></script>
+  </head>
+  <body>
+    <div id="containerReact"></div>
+    <script type="text/babel">
+      let sudoku = [
+        [5, 3, 4, 6, 7, 8, 9, 1, 2],
+        [6, 7, 2, 1, 9, 5, 3, 4, 8],
+        [1, 9, 8, 3, 4, 2, 5, 6, 7],
+        [8, 5, 9, 7, 6, 1, 4, 2, 3],
+        [4, 2, 6, 8, 5, 3, 7, 9, 1],
+        [7, 1, 3, 9, 2, 4, 8, 5, 6],
+        [9, 6, 1, 5, 3, 7, 2, 8, 4],
+        [2, 8, 7, 4, 1, 9, 6, 3, 5],
+        [3, 4, 5, 2, 8, 6, 1, 7, 9],
+      ];
+
+      function isNumberRepeated(array) { // if the element still doesn't exist on the object, it is added with the value 1, but if it is already added on the object, then it is repeated
+        let counts = {};
+        for (let i = 0; i < array.length; i++) {
+          if (counts[array[i]]) {
+            return true;
+          }
+          counts[array[i]] = 1;
+        }
+        return false;
+      }
+
+      function verifyLine(matrix, indexOfLine) {
+        let line = matrix[indexOfLine];
+        for (let i = 1; i <= 9; i++) {
+          if (line.indexOf(i) === -1) {
+            return false;
           }
         }
         
+        return !isNumberRepeated(line);
       }
-      return false;
-    }
 
-    function indexOf(array, elem){
-      for(let i=0; i<array.length; i++){
-        let index = -1;
-        if (array[i] == elem){
-          index = i;
-          break;
+      function verifyColumn(matrix, indexOfColumn) {
+        let column = [];
+        for (let i = 0; i < matrix.length; i++) {
+          column.push(matrix[i][indexOfColumn]);
         }
-      }
-      return index;
-    }
-
-    function verifyLine(arrayLine){
-      let index = 0;
-      for (let i=1; i<=9; i++){
-        if (arrayLine[i] != null){ //or != '.'
-          if (indexOf(arrayLine[index], i) == -1){ //verify if this Line contains all numbers from 1 to 9
-            return false;
-          }
-          if (isNumberRepeated(arrayLine, i)){ //verify if this Line contains a repeated number
+        for (let i = 1; i <= 9; i++) {
+          if (column.indexOf(i) === -1) {
             return false;
           }
         }
-        index++;
-      }
-      return true;
-    }
 
-    function verifyColumn(matrix, indexOfColumn){
-      let line = 0;
-      for (let i=1; i<=9; i++){
-        if (matrix[line][indexOfColumn] != null){
-          if (indexOf(matrix[line][indexOfColumn], i) == -1){ //verify if this Column contains all numbers from 1 to 9
-            return false;
+        return !isNumberRepeated(column);
+      }
+
+      function verifyQuadrant(matrix, quadrantRow, quadrantCol) {
+        let quadrant = [];
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            quadrant.push(matrix[quadrantRow * 3 + i][quadrantCol * 3 + j]);
           }
-          if (isNumberRepeated(matrix[line][indexOfColumn]), i);{ //verify if this Column contains a repeated number
+        }
+        for (let i = 1; i <= 9; i++) {
+          if (quadrant.indexOf(i) === -1) {
             return false;
           }
         }
-        line++;
-      }
-      return true;
-    }
 
-    function verifyQuadrant(matrix, indexOfQuadrant){ // transform a quadrant (0 - 8) into an array, then, it uses the verifyLine function
-      let arrayQuadrant = [];
-      var startI = 0;
-      var startJ = 0;
-      var endI = 0;
-      var endJ = 0;
-
-      if (indexOfQuadrant <= 0){
-        var startI = 0;
-        var startJ = 0;
-        var endI = 2;
-        var endJ = 2;
+        return !isNumberRepeated(quadrant);
       }
 
-      if (indexOfQuadrant == 1){
-        var startI = 0;
-        var startJ = 3;
-        var endI = 2;
-        var endJ = 5;
-      }
-
-      if (indexOfQuadrant == 2){
-        var startI = 0;
-        var startJ = 6;
-        var endI = 2;
-        var endJ = 8;
-      }
-
-      if (indexOfQuadrant == 3){
-        var startI = 3;
-        var startJ = 0;
-        var endI = 5;
-        var endJ = 2;
-      }
-     
-      if (indexOfQuadrant == 4){
-        var startI = 3;
-        var startJ = 3;
-        var endI = 5;
-        var endJ = 5;
-      }
-
-      if (indexOfQuadrant == 5){
-        var startI = 3;
-        var startJ = 6;
-        var endI = 5;
-        var endJ = 8;
-      }
-
-      if (indexOfQuadrant == 6){
-        var startI = 6;
-        var startJ = 0;
-        var endI = 8;
-        var endJ = 2;
-      }
-
-      if (indexOfQuadrant == 7){
-        var startI = 6;
-        var startJ = 3;
-        var endI = 8;
-        var endJ = 5;
-      }
-
-      if (indexOfQuadrant >= 8){
-        var startI = 6;
-        var startJ = 6;
-        var endI = 8;
-        var endJ = 8;
-      }
-
-      for(let i=startI; i<=endI; startI++){
-        for (let j=startJ; j<=endJ; startJ++){
-          arrayQuadrant.push(matrix[startI][startJ]);
+      function verifyAllSudoku(matrix) {
+        for (let i = 0; i < 9; i++) {
+          if (!verifyLine(matrix, i) || !verifyColumn(matrix, i)) {
+            return false;
+          }
         }
-      }
 
-      if (verifyLine(arrayQuadrant)){
+        for (let row = 0; row < 3; row++) {
+          for (let col = 0; col < 3; col++) {
+            if (!verifyQuadrant(matrix, row, col)) {
+              return false;
+            }
+          }
+        }
         return true;
       }
-      else{
-        return false;
+
+      if(verifyAllSudoku(sudoku)){
+        alert("That's rigth!");
       }
-    }
+      else{
+        alert("That's not rigth :(");
+      }
 
-    function Container(props){
-      return(
-        <React.Fragment>
-          <h1>Hello World!!!</h1>
-        </React.Fragment>
-      )
-    }
+      function Container(props) {
+        return (
+          <React.Fragment>
+            <h1>Sudoku Game</h1>
+          </React.Fragment>
+        );
+      }
 
-    ReactDOM.render(<Container/>, document.querySelector("#containerReact"));
-  </script>
-</body>
+      ReactDOM.render(<Container />, document.querySelector("#containerReact"));
+    </script>
+  </body>
 </html>
