@@ -140,19 +140,19 @@
         var endJ = 8;
       }
 
-    for(let i=startI; i<=endI; startI++){
-      for (let j=startJ; j<=endJ; startJ++){
-        arrayQuadrant.push(matrix[startI][startJ]);
+      for(let i=startI; i<=endI; startI++){
+        for (let j=startJ; j<=endJ; startJ++){
+          arrayQuadrant.push(matrix[startI][startJ]);
+        }
+      }
+
+      if (verifyLine(arrayQuadrant)){
+        return true;
+      }
+      else{
+        return false;
       }
     }
-
-    if (verifyLine(arrayQuadrant)){
-      return true;
-    }
-    else{
-      return false;
-    }
-  }
 
     function Container(props){
       return(
