@@ -9,6 +9,17 @@
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
 </head>
 <body>
-  
+  <div id="containerReact"></div>
+  <script type="text/babel">
+    function Container(props){
+      return(
+        <React.Fragment>
+          <h1>Hello World!!!</h1>
+        </React.Fragment>
+      )
+    }
+
+    ReactDOM.render(<Container/>, document.querySelector("#containerReact"));
+  </script>
 </body>
 </html>
